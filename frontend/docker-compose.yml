@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  front:
+    container_name: react_front
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app/front
+      - /app/front/node_modules
+    ports:
+      - "5000:3000"
+    command: yarn run start
+    # command: sh -c "npm install && npm start"
+    env_file:
+      - ./.env
+ 

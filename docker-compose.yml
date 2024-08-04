@@ -1,0 +1,70 @@
+services:
+  frontend:
+   container_name: react-front
+   build:
+     context: frontend
+     dockerfile: Dockerfile.prod
+   env_file:
+     - ./frontend/.env
+   ports:
+     - '80:80'
+   volumes:
+     - static_volume:/home/app/web/api/static
+     - staticfiles:/app/backend/staticfiles
+     - media:/app/backend/media/
+   depends_on:
+     - backend
+  #  networks: 
+  #    - catalog
+
+  backend:
+    container_name: python-api
+    build:
+      context: backend
+      dockerfile: Dockerfile.prod
+    # command: python manage.py runserver 0.0.0.0:8000
+    entrypoint: ./entrypoint.prod.sh
+    stdin_open: true
+    tty: true
+    ports:
+      - '8088:8000'
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app/backend
+      - staticfiles:/app/backend/staticfiles
+      - media:/app/backend/media/
+    depends_on:
+      db:
+        condition: service_healthy
+    # networks: 
+    #   - catalog
+
+  db:
+    container_name: postgres-db
+    image: postgres:15.2-alpine
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=p0576r35
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=books-catalog
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
+    # networks: 
+    #  - catalog
+
+volumes:
+  postgres-data:
+  static_volume:
+  staticfiles:
+  media:
+
+# networks:
+#   catalog: 

@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+#  frontend:
+#    container_name: catalog
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    ports:
+#      - '3000:3000'
+#    volumes:
+#      - ./frontend:/app/front
+#    depends_on:
+#      - backend
+  backend:
+    container_name: python-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    stdin_open: true
+    tty: true
+    ports:
+      - '8088:8000'
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app/backend
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: postgres-db
+    image: postgres:15.2-alpine
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_PASSWORD=p0576r35
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=books-catalog
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
+
+volumes:
+  postgres-data:

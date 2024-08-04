@@ -1,0 +1,12 @@
+# proxy=http://127.0.0.1:3128/
+# https-proxy=http://127.0.0.1:3128/
+# # registry=http://nexus.uclv.edu.cu/repository/dl.yarnpkg.com/
+# # registry=http://nexus.uclv.edu.cu/repository/npm/
+# # registry=https://registry.yarnpkg.com
+# # registry=http://registry.npmjs.org/
+# strict-ssl=false
+# # python=c:\python27\python
+# # msvs_version=2017
+# # last modified: 01 Jan 2016
+# # ; Set a new registry for a scoped package
+# # @myscope:registry=https://mycustomregistry.example.org
